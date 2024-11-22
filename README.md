@@ -8,12 +8,19 @@ Frontend: Acesse o endereço http://localhost:8501
 Backend: Acesse o endereço http://localhost:8000/docs
 
 # Nossa estrutura de pastas e arquivos
+
 ├── README.md # arquivo com a documentação do projeto
+
 ├── backend # pasta do backend (FastAPI, SQLAlchemy, Uvicorn, Pydantic)
+
 ├── frontend # pasta do frontend (Streamlit, Requests, Pandas)
+
 ├── docker-compose.yml # arquivo de configuração do docker-compose (backend, frontend, postgres)
+
 ├── poetry.lock # arquivo de lock do poetry
+
 └── pyproject.toml # arquivo de configuração do poetry
+
 # Nosso Backend
 Nosso backend vai ser uma API, que será responsável por fazer a comunicação entre o nosso frontend com o banco de dados. Vamos detalhar cada uma das pastas e arquivos do nosso backend.
 
@@ -39,19 +46,19 @@ O Pydantic é uma biblioteca para fazer a validação de dados. Ele é utilizado
 Esse arquivo docker-compose.yml define uma aplicação composta por três serviços: postgres, backend e frontend, e cria uma rede chamada mynetwork. Vou explicar cada parte em detalhes:
 
 # Services:
-# Postgres:
+## Postgres:
 image: postgres:latest: Esse serviço utiliza a imagem mais recente do PostgreSQL disponível no Docker Hub.
 volumes: Mapeia o diretório /var/lib/postgresql/data dentro do contêiner do PostgreSQL para um volume chamado postgres_data no sistema hospedeiro. Isso permite que os dados do banco de dados persistam mesmo quando o contêiner é desligado.
 environment: Define variáveis de ambiente para configurar o banco de dados PostgreSQL, como nome do banco de dados (POSTGRES_DB), nome de usuário (POSTGRES_USER) e senha (POSTGRES_PASSWORD).
 networks: Define que este serviço está na rede chamada mynetwork.
-# Backend:
+## Backend:
 build: Especifica que o Docker deve construir uma imagem para esse serviço, usando um Dockerfile localizado no diretório ./backend.
 volumes: Mapeia o diretório ./backend (no sistema hospedeiro) para o diretório /app dentro do contêiner. Isso permite que as alterações no código fonte do backend sejam refletidas no contêiner em tempo real.
 environment: Define a variável de ambiente DATABASE_URL, que especifica a URL de conexão com o banco de dados PostgreSQL.
 ports: Mapeia a porta 8000 do sistema hospedeiro para a porta 8000 do contêiner, permitindo que o serviço seja acessado através da porta 8000.
 depends_on: Indica que este serviço depende do serviço postgres, garantindo que o banco de dados esteja pronto antes que o backend seja iniciado.
 networks: Também define que este serviço está na rede mynetwork.
-# Frontend:
+## Frontend:
 build: Similar ao backend, especifica que o Docker deve construir uma imagem para este serviço, usando um Dockerfile localizado no diretório ./frontend.
 volumes: Mapeia o diretório ./frontend (no sistema hospedeiro) para o diretório /app dentro do contêiner, permitindo alterações em tempo real.
 ports: Mapeia a porta 8501 do sistema hospedeiro para a porta 8501 do contêiner, permitindo acesso ao frontend através da porta 8501.
@@ -65,15 +72,24 @@ Quando você executa docker-compose up, o Docker Compose lerá o arquivo docker-
 
 Nossa estrutura de pastas e arquivos
 ├── backend
+
 │   ├── Dockerfile # arquivo de configuração do Docker
+
 │   ├── crud.py # arquivo com as funções de CRUD utilizando o SQL Alchemy ORM
+
 │   ├── database.py # arquivo com a configuração do banco de dados utilizando o SQL Alchemy 
+
 │   ├── main.py
+
 │   ├── models.py
+
 │   ├── requirements.txt
+
 │   ├── router.py
+
 │   └── schemas.py
-Arquivo database.py
+
+## Arquivo database.py
 O arquivo database.py é responsável por fazer a configuração do banco de dados utilizando o SQLAlchemy. Ele é responsável por criar a conexão com o banco de dados, e também por criar a sessão do banco de dados.
 
 Caso queira mudar de banco de dados, você só precisa mudar a URL de conexão, que está na variável SQLALCHEMY_DATABASE_URL. o SQLAlchemy é compatível com vários bancos de dados, como MySQL, PostgreSQL, SQLite, Oracle, Microsoft SQL Server, Firebird, Sybase e até mesmo o Microsoft Access.
@@ -87,7 +103,8 @@ Criar a engine usando o 'create_engine'
 Criar a sessão do banco
 Criar a Base do ORM (nosso Model vai herdar ele)
 Criar um gerador de sessão para ser reutilizado
-# Arquivo models.py
+
+## Arquivo models.py
 O arquivo models.py é responsável por definir os modelos do SQLAlchemy, que são as classes que definem as tabelas do banco de dados. Esses modelos são utilizados para fazer a comunicação com o banco de dados.
 
 É aqui que definimos o nome da tabela, os campos e os tipos de dados. Conseguimos incluir campos gerados aleatoriamente, como o id e o created_at. Para o id, ao incluir o campo Integer, com o parâmetro primary_key=True, o SQLAlchemy já entende que esse campo é o id da tabela. Para o created_at, ao incluir o campo DateTime, com o parâmetro default=datetime, o SQLAlchemy já entende que esse campo é a data de criação da tabela.
@@ -98,7 +115,7 @@ O models é agnóstico ao banco, ele não sabe qual é o banco que é criado! El
 
 Declarar sua Tabela
 
-# Arquivo schemas.py
+## Arquivo schemas.py
 O arquivo schemas.py é responsável por definir os schemas do Pydantic, que são as classes que definem os tipos de dados que serão utilizados na API. Esses schemas são utilizados para fazer a validação dos dados que são recebidos na API, e também para definir os tipos de dados que são retornados pela API.
 
 O pydantic é a principal biblioteca para validação de dados em Python. Ela é utilizada pelo FastAPI para fazer a validação dos dados recebidos na API, e também para definir os tipos de dados que são retornados pela API.
@@ -117,10 +134,10 @@ Temos o schema ProductResponse, que é o schema que é retornado pela API. Ele �
 
 Temos o schema ProductUpdate, que é o schema que é recebido pela API para update. Ele possui os campos opcionais, pois não é necessário enviar todos os campos para fazer o update.
 
-# Arquivo crud.py
+## Arquivo crud.py
 O arquivo crud.py é responsável por definir as funções de CRUD utilizando o SQLAlchemy ORM. Essas funções são utilizadas para fazer a comunicação com o banco de dados. É nele que definimos as funções de listagem, criação, atualização e remoção de produtos. É onde os dados são persistidos no banco de dados.
 
-# Arquivo router.py
+## Arquivo router.py
 O arquivo router.py é responsável por definir as rotas da API utilizando o FastAPI. É aqui que definimos as rotas, e também as funções que serão executadas em cada rota. Todas as funções definidas aqui recebem um parâmetro, que é o parâmetro request, que é o objeto que contém os dados da requisição.
 
 Os principais parametros são o path, que é o caminho da rota, o methods, que são os métodos HTTP que a rota aceita, e o response_model, que é o schema que é retornado pela rota.
@@ -136,19 +153,19 @@ def read_product_route(product_id: int, db: Session = Depends(get_db)):
     if db_product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return db_product
-# Arquivo main.py
+## Arquivo main.py
 O arquivo main.py é responsável por definir a aplicação do FastAPI, e também por definir o servidor web Uvicorn. É aqui que definimos o servidor web, e também as configurações do servidor web, como o host e a porta.
 
 # Nosso Frontend
 Nosso frontend vai ser uma aplicação que vai consumir a nossa API, e vai ser responsável por fazer o cadastro, alteração e remoção de produtos. Vamos detalhar cada uma das pastas e arquivos do nosso frontend.
 
-# Streamlit
+## Streamlit
 O Streamlit é uma biblioteca para construir aplicações web com Python. Ele é muito utilizado para construir dashboards, e também para construir aplicações que consomem APIs.
 
-# Requests
+## Requests
 O Requests é uma biblioteca para fazer requisições HTTP com Python. Ele é muito utilizado para consumir APIs, e também para fazer web scraping.
 
-# Pandas
+## Pandas
 O Pandas é uma biblioteca para manipulação de dados com Python. Ele é muito utilizado para fazer análise de dados, e também para construir dashboards.
 
 # Deploy <> Em construção
